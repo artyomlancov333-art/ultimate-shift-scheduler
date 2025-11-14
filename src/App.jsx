@@ -134,15 +134,15 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-4 sm:py-8 px-3 sm:px-4">
       <ThemeToggle />
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8">
         {/* Заголовок */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <div className="text-center mb-4 sm:mb-6 lg:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-1 sm:mb-2">
             Ultimate Shift Scheduler
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">Система управления рабочими сменами</p>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Система управления рабочими сменами</p>
         </div>
 
         {/* Режим администратора */}
@@ -186,10 +186,10 @@ function App() {
 
         {/* Переключатель вида */}
         <div className="card">
-          <div className="flex gap-4">
+          <div className="flex gap-2 sm:gap-4">
             <button
               onClick={() => setViewMode('table')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors shadow-sm ${
+              className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-medium transition-colors shadow-sm ${
                 viewMode === 'table'
                   ? 'bg-sber-green text-white dark:bg-sber-green dark:text-white shadow-md'
                   : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600'
@@ -199,7 +199,7 @@ function App() {
             </button>
             <button
               onClick={() => setViewMode('week')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors shadow-sm ${
+              className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base font-medium transition-colors shadow-sm ${
                 viewMode === 'week'
                   ? 'bg-sber-green text-white dark:bg-sber-green dark:text-white shadow-md'
                   : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600'

@@ -8,6 +8,7 @@ const EditSlotModal = ({ slot, isOpen, onClose, onSave, slots }) => {
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
+  const [comment, setComment] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -16,6 +17,7 @@ const EditSlotModal = ({ slot, isOpen, onClose, onSave, slots }) => {
       setDate(slot.date || '');
       setStartTime(slot.startTime || '');
       setEndTime(slot.endTime || '');
+      setComment(slot.comment || '');
       setError('');
     }
   }, [slot]);
@@ -57,16 +59,16 @@ const EditSlotModal = ({ slot, isOpen, onClose, onSave, slots }) => {
       return;
     }
 
-    onSave(slot.id, { name, date, startTime, endTime });
+    onSave(slot.id, { name, date, startTime, endTime, comment });
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-black dark:bg-opacity-70 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-black dark:bg-opacity-70 flex items-center justify-center z-50 p-3 sm:p-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Редактировать смену</h2>
+        <div className="p-4 sm:p-6">
+          <div className="flex justify-between items-center mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">Редактировать смену</h2>
             <button
               onClick={onClose}
               className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-2xl transition-colors"
@@ -81,8 +83,8 @@ const EditSlotModal = ({ slot, isOpen, onClose, onSave, slots }) => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
               <NameSelector value={name} onChange={setName} />
               <DateSelector value={date} onChange={setDate} />
               <TimeSelector 
@@ -94,6 +96,19 @@ const EditSlotModal = ({ slot, isOpen, onClose, onSave, slots }) => {
                 label="Время окончания" 
                 value={endTime} 
                 onChange={setEndTime} 
+              />
+            </div>
+            <div>
+              <label htmlFor="comment" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                Комментарий
+              </label>
+              <input
+                type="text"
+                id="comment"
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className="input-field"
+                placeholder="Добавить комментарий (необязательно)"
               />
             </div>
 

@@ -59,6 +59,7 @@ export const getSlots = (callback) => {
         date: data.date || '',
         startTime: data.startTime || '',
         endTime: data.endTime || '',
+        comment: data.comment || '',
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
       };

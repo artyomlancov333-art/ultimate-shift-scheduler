@@ -4,30 +4,53 @@ import NameSelector from './NameSelector';
 import { addDayOff, deleteDayOff } from '../firebase';
 import { formatDate } from '../firebase';
 
+const NAMES = ['Артём', 'Анастасия', 'Адель', 'Ольга', 'Ксения'];
+
 const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
   const [date, setDate] = useState('');
   const [name, setName] = useState(currentUserName || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [addForAll, setAddForAll] = useState(false);
 
   const handleAddDayOff = async (e) => {
     e.preventDefault();
     
-    if (!name || !date) {
-      onError('Пожалуйста, выберите имя и дату');
+    if (!date) {
+      onError('Пожалуйста, выберите дату');
       return;
     }
 
-    // Проверка, не добавлен ли уже выходной на эту дату для этого человека
-    const existing = daysOff.find(d => d.name === name && d.date === date);
-    if (existing) {
-      onError('Выходной на эту дату уже добавлен');
+    if (!addForAll && !name) {
+      onError('Пожалуйста, выберите имя сотрудника');
       return;
     }
 
     setIsSubmitting(true);
     try {
-      await addDayOff({ name, date });
+      if (addForAll) {
+        // Добавляем выходной для всех сотрудников на выбранную дату
+        const promises = NAMES.map(employeeName => {
+          // Проверяем, не добавлен ли уже выходной
+          const existing = daysOff.find(d => d.name === employeeName && d.date === date);
+          if (!existing) {
+            return addDayOff({ name: employeeName, date });
+          }
+          return Promise.resolve();
+        });
+        await Promise.all(promises);
+      } else {
+        // Проверка, не добавлен ли уже выходной на эту дату для этого человека
+        const existing = daysOff.find(d => d.name === name && d.date === date);
+        if (existing) {
+          onError('Выходной на эту дату уже добавлен');
+          setIsSubmitting(false);
+          return;
+        }
+        await addDayOff({ name, date });
+      }
       setDate('');
+      setAddForAll(false);
+      if (!addForAll) setName(currentUserName || '');
       onError(null);
     } catch (error) {
       onError('Ошибка при добавлении выходного. Попробуйте снова.');
@@ -58,20 +81,42 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
 
   return (
     <div className="card">
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Выходные дни</h2>
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4 sm:mb-6">Выходные дни</h2>
       
-      <form onSubmit={handleAddDayOff} className="mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <NameSelector value={name} onChange={setName} />
-          <DateSelector value={date} onChange={setDate} />
-          <div className="flex items-end">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? 'Добавление...' : 'Добавить выходной'}
-            </button>
+      <form onSubmit={handleAddDayOff} className="mb-4 sm:mb-6">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="addForAll"
+              checked={addForAll}
+              onChange={(e) => {
+                setAddForAll(e.target.checked);
+                if (e.target.checked) {
+                  setName('');
+                } else {
+                  setName(currentUserName || '');
+                }
+              }}
+              className="w-4 h-4 text-sber-green border-gray-300 rounded focus:ring-sber-green dark:bg-gray-700 dark:border-gray-600"
+            />
+            <label htmlFor="addForAll" className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-200">
+              Добавить выходной для всех сотрудников на эту дату
+            </label>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+            {!addForAll && <NameSelector value={name} onChange={setName} />}
+            {addForAll && <div></div>}
+            <DateSelector value={date} onChange={setDate} />
+            <div className="flex items-end">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? 'Добавление...' : addForAll ? `Добавить выходной для всех (${NAMES.length} чел.)` : 'Добавить выходной'}
+              </button>
+            </div>
           </div>
         </div>
       </form>

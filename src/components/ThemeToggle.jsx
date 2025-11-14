@@ -23,13 +23,13 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={() => setIsDark(!isDark)}
-      className="fixed top-4 right-4 z-50 p-3 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:shadow-xl transition-all border border-gray-200 dark:border-gray-700"
+      className="fixed top-2 right-2 sm:top-4 sm:right-4 z-50 p-2 sm:p-3 bg-white dark:bg-gray-800 rounded-full shadow-lg hover:shadow-xl transition-all border border-gray-200 dark:border-gray-700"
       title={isDark ? 'Переключить на светлую тему' : 'Переключить на темную тему'}
     >
       {isDark ? (
-        <span className="text-2xl">☀️</span>
+        <span className="text-xl sm:text-2xl">☀️</span>
       ) : (
-        <span className="text-2xl">🌙</span>
+        <span className="text-xl sm:text-2xl">🌙</span>
       )}
     </button>
   );
