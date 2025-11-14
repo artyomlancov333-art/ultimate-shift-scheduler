@@ -56,20 +56,20 @@ const WeekView = ({ slots, daysOff, currentDate = new Date().toISOString().split
       <div className="overflow-x-auto">
         <table className="w-full min-w-[800px]">
           <thead>
-            <tr className="border-b-2 border-gray-200 dark:border-gray-700">
-              <th className="text-left py-3 px-2 font-semibold text-gray-700 dark:text-gray-300">Сотрудник</th>
+            <tr className="border-b-2 border-gray-200 dark:border-gray-600">
+              <th className="text-left py-3 px-2 font-semibold text-gray-700 dark:text-gray-200">Сотрудник</th>
               {weekDates.map((date, index) => (
                 <th
                   key={date}
-                  className={`text-center py-3 px-2 font-semibold text-gray-700 dark:text-gray-300 ${
-                    date === currentDate ? 'bg-sber-green/10 dark:bg-sber-green/20' : ''
+                  className={`text-center py-3 px-2 font-semibold text-gray-700 dark:text-gray-200 ${
+                    date === currentDate ? 'bg-sber-green/10 dark:bg-sber-green/30 dark:border-b-2 dark:border-sber-green/50' : ''
                   }`}
                 >
                   <div className="text-xs">{weekDays[index]}</div>
                   <div className="text-sm">{formatDate(date)}</div>
                 </th>
               ))}
-              <th className="text-center py-3 px-2 font-semibold text-gray-700 dark:text-gray-300">Итого</th>
+              <th className="text-center py-3 px-2 font-semibold text-gray-700 dark:text-gray-200">Итого</th>
             </tr>
           </thead>
           <tbody>
@@ -82,7 +82,7 @@ const WeekView = ({ slots, daysOff, currentDate = new Date().toISOString().split
               return (
                 <tr
                   key={name}
-                  className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                  className="border-b border-gray-100 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                 >
                   <td className="py-3 px-2 font-medium text-gray-800 dark:text-gray-200">
                     {name}
@@ -95,11 +95,11 @@ const WeekView = ({ slots, daysOff, currentDate = new Date().toISOString().split
                       <td
                         key={date}
                         className={`py-3 px-2 text-center text-sm ${
-                          date === currentDate ? 'bg-sber-green/5 dark:bg-sber-green/10' : ''
+                          date === currentDate ? 'bg-sber-green/5 dark:bg-sber-green/20 dark:border-l dark:border-r dark:border-sber-green/40' : ''
                         }`}
                       >
                         {isOff ? (
-                          <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-2 py-1 rounded text-xs font-medium">
+                          <div className="bg-red-100 dark:bg-red-900/50 dark:border dark:border-red-700/50 text-red-700 dark:text-red-300 px-2 py-1 rounded text-xs font-medium shadow-sm dark:shadow-md">
                             Выходной
                           </div>
                         ) : daySlots.length > 0 ? (
@@ -107,24 +107,24 @@ const WeekView = ({ slots, daysOff, currentDate = new Date().toISOString().split
                             {daySlots.map((slot) => (
                               <div
                                 key={slot.id}
-                                className="bg-sber-green/10 dark:bg-sber-green/20 text-sber-green dark:text-green-400 px-2 py-1 rounded text-xs"
+                                className="bg-sber-green/10 dark:bg-sber-green/40 dark:border dark:border-sber-green/50 text-sber-green dark:text-green-300 dark:font-semibold px-2 py-1 rounded text-xs shadow-sm dark:shadow-md"
                               >
                                 {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
                               </div>
                             ))}
-                            <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                            <div className="text-xs text-gray-600 dark:text-gray-200 dark:font-medium mt-1">
                               {daySlots.reduce((sum, slot) => 
                                 sum + calculateHours(slot.startTime, slot.endTime), 0
                               ).toFixed(1)}ч
                             </div>
                           </div>
                         ) : (
-                          <span className="text-gray-400 dark:text-gray-600">—</span>
+                          <span className="text-gray-400 dark:text-gray-500">—</span>
                         )}
                       </td>
                     );
                   })}
-                  <td className="py-3 px-2 text-center font-semibold text-gray-700 dark:text-gray-300">
+                  <td className="py-3 px-2 text-center font-semibold text-gray-700 dark:text-gray-100">
                     {totalHours.toFixed(1)}ч
                   </td>
                 </tr>

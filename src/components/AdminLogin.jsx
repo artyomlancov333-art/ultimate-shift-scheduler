@@ -22,13 +22,13 @@ const AdminLogin = ({ isAdmin, onLogin, onLogout }) => {
 
   if (isAdmin) {
     return (
-      <div className="card bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border-2 border-red-200 dark:border-red-700">
+      <div className="card bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/40 dark:to-orange-900/30 border-2 border-red-200 dark:border-red-600 shadow-lg dark:shadow-xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-red-500 dark:bg-red-400 rounded-full animate-pulse"></div>
+            <div className="w-3 h-3 bg-red-500 dark:bg-red-400 rounded-full animate-pulse shadow-sm"></div>
             <div>
-              <h3 className="font-bold text-red-700 dark:text-red-400">Режим администратора активен</h3>
-              <p className="text-sm text-red-600 dark:text-red-400/80">Вы можете редактировать и удалять любые смены</p>
+              <h3 className="font-bold text-red-700 dark:text-red-300">Режим администратора активен</h3>
+              <p className="text-sm text-red-600 dark:text-red-300/90">Вы можете редактировать и удалять любые смены</p>
             </div>
           </div>
           <button
@@ -87,7 +87,7 @@ const AdminLogin = ({ isAdmin, onLogin, onLogout }) => {
         )}
       </div>
       {error && (
-        <p className="text-red-600 dark:text-red-400 text-sm mt-2">{error}</p>
+        <p className="text-red-600 dark:text-red-300 text-sm mt-2 font-medium">{error}</p>
       )}
     </div>
   );

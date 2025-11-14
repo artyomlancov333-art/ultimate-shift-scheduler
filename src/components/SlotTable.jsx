@@ -59,11 +59,11 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
         <table className="w-full min-w-[600px]">
           <thead>
             <tr className="border-b-2 border-gray-200 dark:border-gray-600">
-              <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Дата</th>
-              <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Время</th>
-              <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Сотрудник</th>
+              <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Дата</th>
+              <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Время</th>
+              <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Сотрудник</th>
               {(isAdmin || currentUserName) && (
-                <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Действия</th>
+                <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-200">Действия</th>
               )}
             </tr>
           </thead>
@@ -85,14 +85,14 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
                 )}
                 {slot.isFirstInGroup && (
                   <td 
-                    className="py-4 px-4 text-gray-700 dark:text-gray-300 align-top"
+                    className="py-4 px-4 text-gray-700 dark:text-gray-100 dark:font-semibold align-top"
                     rowSpan={slot.groupSize}
                   >
                     {formatTime(slot.groupStartTime)} – {formatTime(slot.groupEndTime)}
                   </td>
                 )}
                 <td className="py-4 px-4">
-                  <span className="inline-block bg-sber-green/10 dark:bg-sber-green/30 text-sber-green dark:text-green-400 px-3 py-1 rounded-full text-sm font-medium border border-sber-green/20 dark:border-sber-green/40">
+                  <span className="inline-block bg-sber-green/10 dark:bg-sber-green/40 text-sber-green dark:text-green-300 px-3 py-1 rounded-full text-sm font-medium border border-sber-green/20 dark:border-sber-green/60 dark:shadow-sm">
                     {slot.name}
                   </span>
                 </td>

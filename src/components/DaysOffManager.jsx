@@ -78,15 +78,15 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
 
       {userDaysOff.length > 0 && (
         <div className="space-y-2">
-          <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-2">Запланированные выходные:</h3>
+          <h3 className="font-semibold text-gray-700 dark:text-gray-200 mb-2">Запланированные выходные:</h3>
           <div className="flex flex-wrap gap-2">
             {userDaysOff.map((dayOff) => (
               <div
                 key={dayOff.id}
-                className="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2"
+                className="flex items-center gap-2 bg-red-50 dark:bg-red-900/40 border border-red-200 dark:border-red-700/60 rounded-lg px-3 py-2 shadow-sm dark:shadow-md"
               >
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  <strong>{dayOff.name}</strong>: {formatDate(dayOff.date)}
+                <span className="text-sm text-gray-700 dark:text-gray-200">
+                  <strong className="dark:text-red-200">{dayOff.name}</strong>: <span className="dark:text-gray-200">{formatDate(dayOff.date)}</span>
                 </span>
                 {(isAdmin || dayOff.name === currentUserName) && (
                   <button
