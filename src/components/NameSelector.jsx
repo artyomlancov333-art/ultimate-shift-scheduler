@@ -2,7 +2,7 @@ const NAMES = ['Артём', 'Анастасия', 'Адель', 'Ольга', '
 
 const NameSelector = ({ value, onChange, className = '' }) => {
   return (
-    <div className={className}>
+    <div className={`${className} min-w-0`}>
       <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
         Имя сотрудника
       </label>
@@ -10,7 +10,7 @@ const NameSelector = ({ value, onChange, className = '' }) => {
         id="name"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="input-field"
+        className="input-field w-full"
       >
         <option value="">Выберите имя</option>
         {NAMES.map((name) => (

@@ -21,6 +21,14 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
   const [useDayOfWeek, setUseDayOfWeek] = useState(false);
   const [dayOfWeek, setDayOfWeek] = useState('');
 
+  // Форматирует дату в локальном времени (YYYY-MM-DD)
+  const formatLocalDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   // Генерирует даты на ближайшие 30 дней для выбранного дня недели
   const generateDatesForDayOfWeek = (targetDayOfWeek) => {
     const dates = [];
@@ -28,21 +36,40 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
     today.setHours(0, 0, 0, 0); // Обнуляем время для точного сравнения
     const targetDay = parseInt(targetDayOfWeek);
     
-    // Находим следующий день недели
+    // JavaScript getDay(): 0=воскресенье, 1=понедельник, ..., 6=суббота
     const currentDay = today.getDay();
+    
+    // Находим следующий день недели
     let daysUntilNext = (targetDay - currentDay + 7) % 7;
-    if (daysUntilNext === 0) daysUntilNext = 7; // Если сегодня этот день, берем следующий
+    if (daysUntilNext === 0) {
+      // Если сегодня выбранный день, берем следующий (через 7 дней)
+      daysUntilNext = 7;
+    }
     
     const firstDate = new Date(today);
     firstDate.setDate(today.getDate() + daysUntilNext);
+    firstDate.setHours(0, 0, 0, 0); // Обнуляем время
+    
+    // Проверяем, что первая дата действительно нужный день недели
+    if (firstDate.getDay() !== targetDay) {
+      console.error('Ошибка: первая дата не соответствует выбранному дню недели', {
+        targetDay,
+        firstDateDay: firstDate.getDay(),
+        firstDate: formatLocalDate(firstDate)
+      });
+    }
     
     // Генерируем даты на 30 дней вперед
     let currentDate = new Date(firstDate);
     const maxDate = new Date(today);
     maxDate.setDate(today.getDate() + 30);
+    maxDate.setHours(23, 59, 59, 999); // Конец дня
     
     while (currentDate <= maxDate) {
-      dates.push(currentDate.toISOString().split('T')[0]);
+      // Дополнительная проверка, что дата соответствует нужному дню недели
+      if (currentDate.getDay() === targetDay) {
+        dates.push(formatLocalDate(currentDate));
+      }
       currentDate.setDate(currentDate.getDate() + 7); // Следующая неделя
     }
     
@@ -154,9 +181,11 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
             </label>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
-            <NameSelector value={name} onChange={setName} />
+            <div className="min-w-0">
+              <NameSelector value={name} onChange={setName} />
+            </div>
             {useDayOfWeek ? (
-              <div>
+              <div className="min-w-0">
                 <label htmlFor="dayOfWeek" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                   День недели
                 </label>
@@ -164,7 +193,7 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
                   id="dayOfWeek"
                   value={dayOfWeek}
                   onChange={(e) => setDayOfWeek(e.target.value)}
-                  className="input-field"
+                  className="input-field w-full"
                 >
                   <option value="">Выберите день</option>
                   {WEEK_DAYS.map((day) => (
@@ -175,13 +204,15 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
                 </select>
               </div>
             ) : (
-              <DateSelector value={date} onChange={setDate} />
+              <div className="min-w-0">
+                <DateSelector value={date} onChange={setDate} />
+              </div>
             )}
-            <div className="flex items-end">
+            <div className="flex items-end min-w-0">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
               >
                 {isSubmitting ? 'Добавление...' : useDayOfWeek ? 'Добавить выходные на месяц' : 'Добавить выходной'}
               </button>

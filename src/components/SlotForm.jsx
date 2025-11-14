@@ -104,8 +104,10 @@ const SlotForm = ({ slots, onError, currentUserName, onUserNameChange }) => {
       <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4 sm:mb-6">Добавить рабочий слот</h2>
       <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-          <NameSelector value={name} onChange={handleNameChange} />
-          <div className="space-y-2">
+          <div className="min-w-0">
+            <NameSelector value={name} onChange={handleNameChange} />
+          </div>
+          <div className="space-y-2 min-w-0">
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -119,9 +121,9 @@ const SlotForm = ({ slots, onError, currentUserName, onUserNameChange }) => {
                     setSelectedDates([]);
                   }
                 }}
-                className="w-4 h-4 text-sber-green border-gray-300 rounded focus:ring-sber-green dark:bg-gray-700 dark:border-gray-600"
+                className="w-4 h-4 text-sber-green border-gray-300 rounded focus:ring-sber-green dark:bg-gray-700 dark:border-gray-600 flex-shrink-0"
               />
-              <label htmlFor="useMultipleDates" className="text-sm font-medium text-gray-700 dark:text-gray-200">
+              <label htmlFor="useMultipleDates" className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-200 break-words">
                 Выбрать несколько дат
               </label>
             </div>
@@ -134,16 +136,20 @@ const SlotForm = ({ slots, onError, currentUserName, onUserNameChange }) => {
               <DateSelector value={date} onChange={setDate} />
             )}
           </div>
-          <TimeSelector 
-            label="Время начала" 
-            value={startTime} 
-            onChange={setStartTime} 
-          />
-          <TimeSelector 
-            label="Время окончания" 
-            value={endTime} 
-            onChange={setEndTime} 
-          />
+          <div className="min-w-0">
+            <TimeSelector 
+              label="Время начала" 
+              value={startTime} 
+              onChange={setStartTime} 
+            />
+          </div>
+          <div className="min-w-0">
+            <TimeSelector 
+              label="Время окончания" 
+              value={endTime} 
+              onChange={setEndTime} 
+            />
+          </div>
         </div>
         <button
           type="submit"

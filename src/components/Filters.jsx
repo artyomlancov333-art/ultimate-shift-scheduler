@@ -5,7 +5,7 @@ const Filters = ({ nameFilter, dateFilter, onNameFilterChange, onDateFilterChang
     <div className="card">
       <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4 sm:mb-6">Фильтры</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
-        <div>
+        <div className="min-w-0">
           <label htmlFor="filter-name" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
             Фильтр по имени
           </label>
@@ -13,7 +13,7 @@ const Filters = ({ nameFilter, dateFilter, onNameFilterChange, onDateFilterChang
             id="filter-name"
             value={nameFilter}
             onChange={(e) => onNameFilterChange(e.target.value)}
-            className="input-field"
+            className="input-field w-full"
           >
             <option value="">Все сотрудники</option>
             {NAMES.map((name) => (
@@ -23,7 +23,7 @@ const Filters = ({ nameFilter, dateFilter, onNameFilterChange, onDateFilterChang
             ))}
           </select>
         </div>
-        <div>
+        <div className="min-w-0">
           <label htmlFor="filter-date" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
             Фильтр по дате
           </label>
@@ -32,13 +32,13 @@ const Filters = ({ nameFilter, dateFilter, onNameFilterChange, onDateFilterChang
             id="filter-date"
             value={dateFilter}
             onChange={(e) => onDateFilterChange(e.target.value)}
-            className="input-field"
+            className="input-field w-full"
           />
         </div>
-        <div className="flex items-end">
+        <div className="flex items-end min-w-0">
           <button
             onClick={onReset}
-            className="btn-secondary w-full"
+            className="btn-secondary w-full whitespace-nowrap"
           >
             Сбросить фильтры
           </button>

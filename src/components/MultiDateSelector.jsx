@@ -31,7 +31,7 @@ const MultiDateSelector = ({ selectedDates, onChange, className = '' }) => {
   };
 
   return (
-    <div className={className}>
+    <div className={`${className} min-w-0`}>
       <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
         Даты (можно выбрать несколько)
       </label>
@@ -42,12 +42,12 @@ const MultiDateSelector = ({ selectedDates, onChange, className = '' }) => {
           onChange={(e) => setDateInput(e.target.value)}
           onKeyPress={handleKeyPress}
           min={today}
-          className="input-field flex-1"
+          className="input-field flex-1 min-w-0"
         />
         <button
           type="button"
           onClick={handleAddDate}
-          className="btn-secondary px-3 sm:px-4 whitespace-nowrap text-sm"
+          className="btn-secondary px-3 sm:px-4 whitespace-nowrap text-sm flex-shrink-0"
         >
           Добавить
         </button>
@@ -57,13 +57,13 @@ const MultiDateSelector = ({ selectedDates, onChange, className = '' }) => {
           {selectedDates.map((date) => (
             <span
               key={date}
-              className="inline-flex items-center gap-1 bg-sber-green/10 dark:bg-sber-green/30 text-sber-green dark:text-green-300 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium border border-sber-green/20 dark:border-sber-green/50"
+              className="inline-flex items-center gap-1 bg-sber-green/10 dark:bg-sber-green/30 text-sber-green dark:text-green-300 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium border border-sber-green/20 dark:border-sber-green/50 whitespace-nowrap"
             >
               {formatDate(date)}
               <button
                 type="button"
                 onClick={() => handleRemoveDate(date)}
-                className="ml-1 text-sber-green dark:text-green-400 hover:text-red-500 dark:hover:text-red-400 transition-colors text-sm sm:text-base"
+                className="ml-1 text-sber-green dark:text-green-400 hover:text-red-500 dark:hover:text-red-400 transition-colors text-sm sm:text-base flex-shrink-0"
                 title="Удалить"
               >
                 ×

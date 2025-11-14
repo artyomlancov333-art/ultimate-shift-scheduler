@@ -3,7 +3,7 @@ const DateSelector = ({ value, onChange, className = '' }) => {
   const today = new Date().toISOString().split('T')[0];
   
   return (
-    <div className={className}>
+    <div className={`${className} min-w-0`}>
       <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
         Дата
       </label>
@@ -13,7 +13,7 @@ const DateSelector = ({ value, onChange, className = '' }) => {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         min={today}
-        className="input-field"
+        className="input-field w-full"
       />
     </div>
   );
