@@ -4,12 +4,20 @@ import DateSelector from './DateSelector';
 import TimeSelector from './TimeSelector';
 import { addSlot } from '../firebase';
 
-const SlotForm = ({ slots, onError }) => {
-  const [name, setName] = useState('');
+const SlotForm = ({ slots, onError, currentUserName, onUserNameChange }) => {
+  const [name, setName] = useState(currentUserName || '');
   const [date, setDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Синхронизация с внешним состоянием
+  const handleNameChange = (newName) => {
+    setName(newName);
+    if (onUserNameChange) {
+      onUserNameChange(newName);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,7 +75,7 @@ const SlotForm = ({ slots, onError }) => {
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Добавить рабочий слот</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <NameSelector value={name} onChange={setName} />
+          <NameSelector value={name} onChange={handleNameChange} />
           <DateSelector value={date} onChange={setDate} />
           <TimeSelector 
             label="Время начала" 

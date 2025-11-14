@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import SlotForm from './components/SlotForm';
 import SlotTable from './components/SlotTable';
 import Filters from './components/Filters';
-import { getSlots, calculateHours, formatDate } from './firebase';
+import AdminLogin from './components/AdminLogin';
+import EditSlotModal from './components/EditSlotModal';
+import { getSlots, calculateHours, formatDate, deleteSlot, updateSlot } from './firebase';
 
 function App() {
   const [slots, setSlots] = useState([]);
@@ -11,6 +13,9 @@ function App() {
   const [dateFilter, setDateFilter] = useState('');
   const [error, setError] = useState(null);
   const [selectedPerson, setSelectedPerson] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUserName, setCurrentUserName] = useState('');
+  const [editingSlot, setEditingSlot] = useState(null);
 
   // Подписка на изменения в Firebase
   useEffect(() => {
@@ -78,6 +83,39 @@ function App() {
   const personHours = calculatePersonHours();
   const totalHours = calculateTotalHours();
 
+  const handleDeleteSlot = async (slotId) => {
+    try {
+      await deleteSlot(slotId);
+      setError(null);
+    } catch (error) {
+      setError('Ошибка при удалении слота. Попробуйте снова.');
+      console.error(error);
+    }
+  };
+
+  const handleEditSlot = (slot) => {
+    setEditingSlot(slot);
+  };
+
+  const handleSaveEdit = async (slotId, updatedData) => {
+    try {
+      await updateSlot(slotId, updatedData);
+      setEditingSlot(null);
+      setError(null);
+    } catch (error) {
+      setError('Ошибка при обновлении слота. Попробуйте снова.');
+      console.error(error);
+    }
+  };
+
+  const handleAdminLogin = () => {
+    setIsAdmin(true);
+  };
+
+  const handleAdminLogout = () => {
+    setIsAdmin(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -89,6 +127,13 @@ function App() {
           <p className="text-gray-600">Система управления рабочими сменами</p>
         </div>
 
+        {/* Режим администратора */}
+        <AdminLogin 
+          isAdmin={isAdmin} 
+          onLogin={handleAdminLogin}
+          onLogout={handleAdminLogout}
+        />
+
         {/* Сообщение об ошибке */}
         {error && (
           <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg">
@@ -97,7 +142,12 @@ function App() {
         )}
 
         {/* Форма добавления слота */}
-        <SlotForm slots={slots} onError={setError} />
+        <SlotForm 
+          slots={slots} 
+          onError={setError}
+          currentUserName={currentUserName}
+          onUserNameChange={setCurrentUserName}
+        />
 
         {/* Фильтры */}
         <Filters
@@ -109,7 +159,22 @@ function App() {
         />
 
         {/* Таблица слотов */}
-        <SlotTable slots={filteredSlots} />
+        <SlotTable 
+          slots={filteredSlots.length > 0 ? filteredSlots : slots}
+          isAdmin={isAdmin}
+          currentUserName={currentUserName}
+          onEdit={handleEditSlot}
+          onDelete={handleDeleteSlot}
+        />
+
+        {/* Модальное окно редактирования */}
+        <EditSlotModal
+          slot={editingSlot}
+          isOpen={!!editingSlot}
+          onClose={() => setEditingSlot(null)}
+          onSave={handleSaveEdit}
+          slots={slots}
+        />
 
         {/* Статистика часов */}
         <div className="card bg-gradient-to-r from-sber-green/10 to-green-50">

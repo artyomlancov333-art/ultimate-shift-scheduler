@@ -1,16 +1,17 @@
 // Firebase configuration
 // Замените эти значения на ваши реальные ключи Firebase
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, Timestamp } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, Timestamp, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 
 // TODO: Замените на ваши реальные ключи Firebase
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyASJIpNOj58QUKOEEsFYYiqrldmff9Bk50",
+  authDomain: "ultimate-shift-scheduler.firebaseapp.com",
+  projectId: "ultimate-shift-scheduler",
+  storageBucket: "ultimate-shift-scheduler.firebasestorage.app",
+  messagingSenderId: "930631363666",
+  appId: "1:930631363666:web:7e40c51ea33579fcb8038b",
+  measurementId: "G-9L577EDB5W"
 };
 
 // Initialize Firebase
@@ -119,13 +120,47 @@ export const groupSlotsByDateTime = (slots) => {
         endTime: slot.endTime,
         names: [],
         ids: [],
+        slots: [], // Сохраняем полные данные слотов
       };
     }
     grouped[key].names.push(slot.name);
     grouped[key].ids.push(slot.id);
+    grouped[key].slots.push(slot); // Сохраняем полный объект слота
   });
   
   return Object.values(grouped);
+};
+
+/**
+ * Удаляет слот из Firestore
+ * @param {string} slotId - ID слота для удаления
+ * @returns {Promise<void>}
+ */
+export const deleteSlot = async (slotId) => {
+  try {
+    await deleteDoc(doc(db, SLOTS_COLLECTION, slotId));
+  } catch (error) {
+    console.error('Error deleting slot:', error);
+    throw error;
+  }
+};
+
+/**
+ * Обновляет слот в Firestore
+ * @param {string} slotId - ID слота для обновления
+ * @param {Object} updatedData - Обновленные данные { name, date, startTime, endTime }
+ * @returns {Promise<void>}
+ */
+export const updateSlot = async (slotId, updatedData) => {
+  try {
+    await updateDoc(doc(db, SLOTS_COLLECTION, slotId), {
+      ...updatedData,
+      updatedAt: Timestamp.now(),
+    });
+  } catch (error) {
+    console.error('Error updating slot:', error);
+    throw error;
+  }
 };
 
 export { db };
