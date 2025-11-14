@@ -202,15 +202,15 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
             {userDaysOff.map((dayOff) => (
               <div
                 key={dayOff.id}
-                className="flex items-center gap-2 bg-red-50 dark:bg-red-900/40 border border-red-200 dark:border-red-700/60 rounded-lg px-3 py-2 shadow-sm dark:shadow-md"
+                className="flex items-center gap-2 bg-red-50 dark:bg-red-900/40 border border-red-200 dark:border-red-700/60 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 shadow-sm dark:shadow-md max-w-full"
               >
-                <span className="text-sm text-gray-700 dark:text-gray-200">
+                <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-200 break-words min-w-0">
                   <strong className="dark:text-red-200">{dayOff.name}</strong>: <span className="dark:text-gray-200">{formatDate(dayOff.date)}</span>
                 </span>
                 {(isAdmin || dayOff.name === currentUserName) && (
                   <button
                     onClick={() => handleDeleteDayOff(dayOff.id, dayOff.name)}
-                    className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm"
+                    className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 text-sm flex-shrink-0"
                     title="Удалить"
                   >
                     ✕

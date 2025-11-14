@@ -70,18 +70,18 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
   });
 
   return (
-    <div className="card overflow-x-auto -mx-3 sm:mx-0">
+    <div className="card">
       <h2 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4 sm:mb-6">Расписание смен</h2>
-      <div className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
-        <table className="w-full min-w-[700px] sm:min-w-[600px]">
+      <div className="overflow-x-auto -mx-4 sm:-mx-6 px-4 sm:px-6">
+        <table className="w-full min-w-[700px]">
           <thead>
             <tr className="border-b-2 border-gray-200 dark:border-gray-600">
-              <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">Дата</th>
-              <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">Время</th>
-              <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">Сотрудник</th>
+              <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 whitespace-nowrap">Дата</th>
+              <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 whitespace-nowrap">Время</th>
+              <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 whitespace-nowrap">Сотрудник</th>
               <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">Комментарий</th>
               {(isAdmin || currentUserName) && (
-                <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200">Действия</th>
+                <th className="text-left py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 whitespace-nowrap">Действия</th>
               )}
             </tr>
           </thead>
@@ -95,7 +95,7 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
               >
                 {slot.isFirstInGroup && (
                   <td 
-                    className="py-2 sm:py-4 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-800 dark:text-gray-200 align-top"
+                    className="py-2 sm:py-4 px-2 sm:px-4 text-xs sm:text-sm font-medium text-gray-800 dark:text-gray-200 align-top whitespace-nowrap"
                     rowSpan={slot.groupSize}
                   >
                     {formatDate(slot.groupDate)}
@@ -103,20 +103,20 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
                 )}
                 {slot.isFirstInGroup && (
                   <td 
-                    className="py-2 sm:py-4 px-2 sm:px-4 text-xs sm:text-sm text-gray-700 dark:text-gray-100 dark:font-semibold align-top"
+                    className="py-2 sm:py-4 px-2 sm:px-4 text-xs sm:text-sm text-gray-700 dark:text-gray-100 dark:font-semibold align-top whitespace-nowrap"
                     rowSpan={slot.groupSize}
                   >
                     {formatTime(slot.groupStartTime)} – {formatTime(slot.groupEndTime)}
                   </td>
                 )}
                 <td className="py-2 sm:py-4 px-2 sm:px-4">
-                  <span className="inline-block bg-sber-green/10 dark:bg-sber-green/40 text-sber-green dark:text-green-300 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium border border-sber-green/20 dark:border-sber-green/60 dark:shadow-sm">
+                  <span className="inline-block bg-sber-green/10 dark:bg-sber-green/40 text-sber-green dark:text-green-300 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium border border-sber-green/20 dark:border-sber-green/60 dark:shadow-sm whitespace-nowrap">
                     {slot.name}
                   </span>
                 </td>
-                <td className="py-2 sm:py-4 px-2 sm:px-4">
+                <td className="py-2 sm:py-4 px-2 sm:px-4 max-w-[200px] sm:max-w-none">
                   {editingComment === slot.id ? (
-                    <div className="flex gap-1 sm:gap-2 items-center flex-wrap">
+                    <div className="flex gap-1 sm:gap-2 items-center">
                       <input
                         type="text"
                         value={commentValue}
@@ -130,13 +130,13 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
                             setCommentValue('');
                           }
                         }}
-                        className="flex-1 min-w-[120px] px-2 py-1 text-xs sm:text-sm border border-gray-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-sber-green"
+                        className="flex-1 min-w-0 px-2 py-1 text-xs sm:text-sm border border-gray-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-100 rounded focus:outline-none focus:ring-2 focus:ring-sber-green"
                         autoFocus
                         placeholder="Комментарий..."
                       />
                       <button
                         onClick={() => handleCommentSave(slot.id)}
-                        className="px-2 py-1 bg-green-500 dark:bg-green-600 text-white text-xs rounded hover:bg-green-600 dark:hover:bg-green-500 transition-colors"
+                        className="px-2 py-1 bg-green-500 dark:bg-green-600 text-white text-xs rounded hover:bg-green-600 dark:hover:bg-green-500 transition-colors flex-shrink-0"
                         title="Сохранить"
                       >
                         ✓
@@ -146,15 +146,15 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
                           setEditingComment(null);
                           setCommentValue('');
                         }}
-                        className="px-2 py-1 bg-gray-500 dark:bg-gray-600 text-white text-xs rounded hover:bg-gray-600 dark:hover:bg-gray-500 transition-colors"
+                        className="px-2 py-1 bg-gray-500 dark:bg-gray-600 text-white text-xs rounded hover:bg-gray-600 dark:hover:bg-gray-500 transition-colors flex-shrink-0"
                         title="Отмена"
                       >
                         ×
                       </button>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1 sm:gap-2">
-                      <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 flex-1 break-words">
+                    <div className="flex items-start gap-1 sm:gap-2">
+                      <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 break-words min-w-0 flex-1">
                         {slot.comment || <span className="text-gray-400 dark:text-gray-500 italic">—</span>}
                       </span>
                       <button
@@ -168,7 +168,7 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
                   )}
                 </td>
                 {(isAdmin || currentUserName) && (
-                  <td className="py-2 sm:py-4 px-2 sm:px-4">
+                  <td className="py-2 sm:py-4 px-2 sm:px-4 whitespace-nowrap">
                     <div className="flex gap-1 sm:gap-2">
                       {canEditSlot(slot) && (
                         <button
