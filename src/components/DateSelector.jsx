@@ -4,7 +4,7 @@ const DateSelector = ({ value, onChange, className = '' }) => {
   
   return (
     <div className={className}>
-      <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-2">
+      <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
         Дата
       </label>
       <input

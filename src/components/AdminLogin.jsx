@@ -22,13 +22,13 @@ const AdminLogin = ({ isAdmin, onLogin, onLogout }) => {
 
   if (isAdmin) {
     return (
-      <div className="card bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-200">
+      <div className="card bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border-2 border-red-200 dark:border-red-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+            <div className="w-3 h-3 bg-red-500 dark:bg-red-400 rounded-full animate-pulse"></div>
             <div>
-              <h3 className="font-bold text-red-700">Режим администратора активен</h3>
-              <p className="text-sm text-red-600">Вы можете редактировать и удалять любые смены</p>
+              <h3 className="font-bold text-red-700 dark:text-red-400">Режим администратора активен</h3>
+              <p className="text-sm text-red-600 dark:text-red-400/80">Вы можете редактировать и удалять любые смены</p>
             </div>
           </div>
           <button
@@ -46,8 +46,8 @@ const AdminLogin = ({ isAdmin, onLogin, onLogout }) => {
     <div className="card">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-semibold text-gray-800">Режим администратора</h3>
-          <p className="text-sm text-gray-600">Войдите для редактирования и удаления смен</p>
+          <h3 className="font-semibold text-gray-800 dark:text-gray-200">Режим администратора</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Войдите для редактирования и удаления смен</p>
         </div>
         {!showLogin ? (
           <button
@@ -66,7 +66,7 @@ const AdminLogin = ({ isAdmin, onLogin, onLogout }) => {
                 setError('');
               }}
               placeholder="Пароль"
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sber-green"
+              className="px-3 py-2 border border-gray-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-sber-green"
               autoFocus
             />
             <button type="submit" className="btn-primary text-sm">
@@ -87,7 +87,7 @@ const AdminLogin = ({ isAdmin, onLogin, onLogout }) => {
         )}
       </div>
       {error && (
-        <p className="text-red-600 text-sm mt-2">{error}</p>
+        <p className="text-red-600 dark:text-red-400 text-sm mt-2">{error}</p>
       )}
     </div>
   );

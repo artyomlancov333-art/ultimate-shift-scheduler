@@ -3,10 +3,10 @@ const NAMES = ['Артём', 'Анастасия', 'Адель', 'Ольга', '
 const Filters = ({ nameFilter, dateFilter, onNameFilterChange, onDateFilterChange, onReset }) => {
   return (
     <div className="card">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Фильтры</h2>
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Фильтры</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <label htmlFor="filter-name" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="filter-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Фильтр по имени
           </label>
           <select
@@ -24,7 +24,7 @@ const Filters = ({ nameFilter, dateFilter, onNameFilterChange, onDateFilterChang
           </select>
         </div>
         <div>
-          <label htmlFor="filter-date" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="filter-date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Фильтр по дате
           </label>
           <input

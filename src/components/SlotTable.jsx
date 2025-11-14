@@ -18,7 +18,7 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
   if (groupedSlots.length === 0) {
     return (
       <div className="card">
-        <p className="text-gray-500 text-center py-8">Нет запланированных слотов</p>
+        <p className="text-gray-500 dark:text-gray-400 text-center py-8">Нет запланированных слотов</p>
       </div>
     );
   }
@@ -54,16 +54,16 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
 
   return (
     <div className="card overflow-x-auto">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Расписание смен</h2>
+      <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Расписание смен</h2>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[600px]">
           <thead>
-            <tr className="border-b-2 border-gray-200">
-              <th className="text-left py-3 px-4 font-semibold text-gray-700">Дата</th>
-              <th className="text-left py-3 px-4 font-semibold text-gray-700">Время</th>
-              <th className="text-left py-3 px-4 font-semibold text-gray-700">Сотрудник</th>
+            <tr className="border-b-2 border-gray-200 dark:border-gray-600">
+              <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Дата</th>
+              <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Время</th>
+              <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Сотрудник</th>
               {(isAdmin || currentUserName) && (
-                <th className="text-left py-3 px-4 font-semibold text-gray-700">Действия</th>
+                <th className="text-left py-3 px-4 font-semibold text-gray-700 dark:text-gray-300">Действия</th>
               )}
             </tr>
           </thead>
@@ -71,13 +71,13 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
             {flatSlots.map((slot) => (
               <tr 
                 key={slot.id}
-                className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${
-                  !slot.isFirstInGroup ? 'bg-gray-50/50' : ''
+                className={`border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${
+                  !slot.isFirstInGroup ? 'bg-gray-50/50 dark:bg-gray-800/30' : ''
                 }`}
               >
                 {slot.isFirstInGroup && (
                   <td 
-                    className="py-4 px-4 font-medium text-gray-800 align-top"
+                    className="py-4 px-4 font-medium text-gray-800 dark:text-gray-200 align-top"
                     rowSpan={slot.groupSize}
                   >
                     {formatDate(slot.groupDate)}
@@ -85,14 +85,14 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
                 )}
                 {slot.isFirstInGroup && (
                   <td 
-                    className="py-4 px-4 text-gray-700 align-top"
+                    className="py-4 px-4 text-gray-700 dark:text-gray-300 align-top"
                     rowSpan={slot.groupSize}
                   >
                     {formatTime(slot.groupStartTime)} – {formatTime(slot.groupEndTime)}
                   </td>
                 )}
                 <td className="py-4 px-4">
-                  <span className="inline-block bg-sber-green/10 text-sber-green px-3 py-1 rounded-full text-sm font-medium">
+                  <span className="inline-block bg-sber-green/10 dark:bg-sber-green/30 text-sber-green dark:text-green-400 px-3 py-1 rounded-full text-sm font-medium border border-sber-green/20 dark:border-sber-green/40">
                     {slot.name}
                   </span>
                 </td>
@@ -102,7 +102,7 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
                       {canEditSlot(slot) && (
                         <button
                           onClick={() => onEdit(slot)}
-                          className="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition-colors"
+                          className="px-3 py-1.5 bg-blue-500 dark:bg-blue-600 text-white text-xs rounded hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors shadow-sm dark:shadow-md font-medium"
                           title="Редактировать"
                         >
                           ✏️
@@ -115,7 +115,7 @@ const SlotTable = ({ slots, isAdmin, currentUserName, onEdit, onDelete }) => {
                               onDelete(slot.id);
                             }
                           }}
-                          className="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-colors"
+                          className="px-3 py-1.5 bg-red-500 dark:bg-red-600 text-white text-xs rounded hover:bg-red-600 dark:hover:bg-red-500 transition-colors shadow-sm dark:shadow-md font-medium"
                           title="Удалить"
                         >
                           🗑️

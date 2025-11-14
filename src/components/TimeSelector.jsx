@@ -1,7 +1,7 @@
 const TimeSelector = ({ label, value, onChange, className = '' }) => {
   return (
     <div className={className}>
-      <label htmlFor={label.toLowerCase()} className="block text-sm font-medium text-gray-700 mb-2">
+      <label htmlFor={label.toLowerCase()} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
         {label}
       </label>
       <input
