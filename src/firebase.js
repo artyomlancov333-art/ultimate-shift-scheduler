@@ -1,7 +1,7 @@
 // Firebase configuration
 // Замените эти значения на ваши реальные ключи Firebase
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, Timestamp, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, onSnapshot, Timestamp, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 
 // TODO: Замените на ваши реальные ключи Firebase
 const firebaseConfig = {
@@ -45,20 +45,40 @@ export const addSlot = async (slotData) => {
  * @returns {Function} Функция для отписки
  */
 export const getSlots = (callback) => {
-  const q = query(
-    collection(db, SLOTS_COLLECTION),
-    orderBy('date', 'asc'),
-    orderBy('startTime', 'asc')
-  );
+  // Используем простой запрос без orderBy (сортировка на клиенте)
+  // Это избегает необходимости создавать индексы в Firebase
+  const q = query(collection(db, SLOTS_COLLECTION));
 
   return onSnapshot(q, (snapshot) => {
-    const slots = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const slots = snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        name: data.name || '',
+        date: data.date || '',
+        startTime: data.startTime || '',
+        endTime: data.endTime || '',
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+      };
+    });
+    
+    // Сортировка на клиенте
+    slots.sort((a, b) => {
+      if (a.date !== b.date) {
+        return a.date.localeCompare(b.date);
+      }
+      if (a.startTime !== b.startTime) {
+        return a.startTime.localeCompare(b.startTime);
+      }
+      return a.endTime.localeCompare(b.endTime);
+    });
+    
+    console.log('Slots loaded:', slots.length); // Для отладки
     callback(slots);
   }, (error) => {
     console.error('Error getting slots:', error);
+    // В случае ошибки всё равно вызываем callback с пустым массивом
     callback([]);
   });
 };

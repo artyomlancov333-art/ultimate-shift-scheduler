@@ -20,6 +20,7 @@ function App() {
   // Подписка на изменения в Firebase
   useEffect(() => {
     const unsubscribe = getSlots((newSlots) => {
+      console.log('Received slots from Firebase:', newSlots.length, newSlots);
       setSlots(newSlots);
     });
 
@@ -38,6 +39,7 @@ function App() {
       filtered = filtered.filter(slot => slot.date === dateFilter);
     }
 
+    console.log('Filtered slots:', filtered.length, 'Total slots:', slots.length);
     setFilteredSlots(filtered);
     
     // Устанавливаем выбранного человека для подсчёта часов
