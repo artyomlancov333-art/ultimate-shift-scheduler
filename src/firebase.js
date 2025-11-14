@@ -18,8 +18,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Collection name
+// Collection names
 const SLOTS_COLLECTION = 'slots';
+const DAYS_OFF_COLLECTION = 'daysOff';
 
 /**
  * Добавляет новый слот в Firestore
@@ -181,6 +182,87 @@ export const updateSlot = async (slotId, updatedData) => {
     console.error('Error updating slot:', error);
     throw error;
   }
+};
+
+/**
+ * Добавляет выходной день
+ * @param {Object} dayOffData - Данные выходного { name, date }
+ * @returns {Promise<string>} ID созданного документа
+ */
+export const addDayOff = async (dayOffData) => {
+  try {
+    const docRef = await addDoc(collection(db, DAYS_OFF_COLLECTION), {
+      ...dayOffData,
+      createdAt: Timestamp.now(),
+    });
+    return docRef.id;
+  } catch (error) {
+    console.error('Error adding day off:', error);
+    throw error;
+  }
+};
+
+/**
+ * Подписывается на изменения выходных дней
+ * @param {Function} callback - Функция обратного вызова
+ * @returns {Function} Функция для отписки
+ */
+export const getDaysOff = (callback) => {
+  const q = query(collection(db, DAYS_OFF_COLLECTION));
+
+  return onSnapshot(q, (snapshot) => {
+    const daysOff = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    callback(daysOff);
+  }, (error) => {
+    console.error('Error getting days off:', error);
+    callback([]);
+  });
+};
+
+/**
+ * Удаляет выходной день
+ * @param {string} dayOffId - ID выходного дня
+ * @returns {Promise<void>}
+ */
+export const deleteDayOff = async (dayOffId) => {
+  try {
+    await deleteDoc(doc(db, DAYS_OFF_COLLECTION, dayOffId));
+  } catch (error) {
+    console.error('Error deleting day off:', error);
+    throw error;
+  }
+};
+
+/**
+ * Получает начало недели для даты
+ * @param {string} dateString - Дата в формате YYYY-MM-DD
+ * @returns {string} Дата начала недели
+ */
+export const getWeekStart = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDay();
+  const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Понедельник = 1
+  const monday = new Date(date.setDate(diff));
+  return monday.toISOString().split('T')[0];
+};
+
+/**
+ * Получает все даты недели
+ * @param {string} weekStart - Дата начала недели YYYY-MM-DD
+ * @returns {Array} Массив дат недели
+ */
+export const getWeekDates = (weekStart) => {
+  const dates = [];
+  const start = new Date(weekStart);
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(start);
+    date.setDate(start.getDate() + i);
+    dates.push(date.toISOString().split('T')[0]);
+  }
+  return dates;
 };
 
 export { db };

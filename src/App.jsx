@@ -4,11 +4,15 @@ import SlotTable from './components/SlotTable';
 import Filters from './components/Filters';
 import AdminLogin from './components/AdminLogin';
 import EditSlotModal from './components/EditSlotModal';
-import { getSlots, calculateHours, formatDate, deleteSlot, updateSlot } from './firebase';
+import ThemeToggle from './components/ThemeToggle';
+import DaysOffManager from './components/DaysOffManager';
+import WeekView from './components/WeekView';
+import { getSlots, getDaysOff, calculateHours, formatDate, deleteSlot, updateSlot } from './firebase';
 
 function App() {
   const [slots, setSlots] = useState([]);
   const [filteredSlots, setFilteredSlots] = useState([]);
+  const [daysOff, setDaysOff] = useState([]);
   const [nameFilter, setNameFilter] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [error, setError] = useState(null);
@@ -16,12 +20,23 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentUserName, setCurrentUserName] = useState('');
   const [editingSlot, setEditingSlot] = useState(null);
+  const [viewMode, setViewMode] = useState('table'); // 'table' или 'week'
 
   // Подписка на изменения в Firebase
   useEffect(() => {
     const unsubscribe = getSlots((newSlots) => {
       console.log('Received slots from Firebase:', newSlots.length, newSlots);
       setSlots(newSlots);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Подписка на выходные дни
+  useEffect(() => {
+    const unsubscribe = getDaysOff((newDaysOff) => {
+      console.log('Received days off from Firebase:', newDaysOff.length);
+      setDaysOff(newDaysOff);
     });
 
     return () => unsubscribe();
@@ -119,14 +134,15 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+      <ThemeToggle />
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Заголовок */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             Ultimate Shift Scheduler
           </h1>
-          <p className="text-gray-600">Система управления рабочими сменами</p>
+          <p className="text-gray-600 dark:text-gray-400">Система управления рабочими сменами</p>
         </div>
 
         {/* Режим администратора */}
@@ -138,7 +154,7 @@ function App() {
 
         {/* Сообщение об ошибке */}
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-lg">
+          <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 text-red-700 dark:text-red-400 p-4 rounded-lg">
             <p className="font-medium">{error}</p>
           </div>
         )}
@@ -151,6 +167,14 @@ function App() {
           onUserNameChange={setCurrentUserName}
         />
 
+        {/* Управление выходными */}
+        <DaysOffManager
+          daysOff={daysOff}
+          onError={setError}
+          currentUserName={currentUserName}
+          isAdmin={isAdmin}
+        />
+
         {/* Фильтры */}
         <Filters
           nameFilter={nameFilter}
@@ -160,14 +184,47 @@ function App() {
           onReset={handleResetFilters}
         />
 
-        {/* Таблица слотов */}
-        <SlotTable 
-          slots={filteredSlots.length > 0 ? filteredSlots : slots}
-          isAdmin={isAdmin}
-          currentUserName={currentUserName}
-          onEdit={handleEditSlot}
-          onDelete={handleDeleteSlot}
-        />
+        {/* Переключатель вида */}
+        <div className="card">
+          <div className="flex gap-4">
+            <button
+              onClick={() => setViewMode('table')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                viewMode === 'table'
+                  ? 'bg-sber-green text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              }`}
+            >
+              Таблица
+            </button>
+            <button
+              onClick={() => setViewMode('week')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                viewMode === 'week'
+                  ? 'bg-sber-green text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              }`}
+            >
+              Неделя
+            </button>
+          </div>
+        </div>
+
+        {/* Таблица слотов или недельный вид */}
+        {viewMode === 'table' ? (
+          <SlotTable 
+            slots={filteredSlots.length > 0 ? filteredSlots : slots}
+            isAdmin={isAdmin}
+            currentUserName={currentUserName}
+            onEdit={handleEditSlot}
+            onDelete={handleDeleteSlot}
+          />
+        ) : (
+          <WeekView
+            slots={slots}
+            daysOff={daysOff}
+          />
+        )}
 
         {/* Модальное окно редактирования */}
         <EditSlotModal
@@ -179,8 +236,8 @@ function App() {
         />
 
         {/* Статистика часов */}
-        <div className="card bg-gradient-to-r from-sber-green/10 to-green-50">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Статистика часов</h2>
+        <div className="card bg-gradient-to-r from-sber-green/10 to-green-50 dark:from-sber-green/20 dark:to-green-900/20">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-6">Статистика часов</h2>
           
           {selectedPerson ? (
             <div className="space-y-4">
@@ -190,15 +247,15 @@ function App() {
                 </h3>
                 <div className="space-y-2">
                   {Object.entries(personHours.daily).map(([date, hours]) => (
-                    <div key={date} className="flex justify-between items-center bg-white p-3 rounded-lg">
-                      <span className="text-gray-700">{formatDate(date)}</span>
+                    <div key={date} className="flex justify-between items-center bg-white dark:bg-gray-800 p-3 rounded-lg">
+                      <span className="text-gray-700 dark:text-gray-300">{formatDate(date)}</span>
                       <span className="font-semibold text-sber-green">{hours.toFixed(2)} ч</span>
                     </div>
                   ))}
                 </div>
-                <div className="mt-4 pt-4 border-t border-gray-200">
+                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold text-gray-800">Общие часы:</span>
+                    <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">Общие часы:</span>
                     <span className="text-2xl font-bold text-sber-green">
                       {personHours.total.toFixed(2)} ч
                     </span>
@@ -207,12 +264,12 @@ function App() {
               </div>
             </div>
           ) : (
-            <p className="text-gray-600">Выберите сотрудника в фильтрах, чтобы увидеть его статистику</p>
+            <p className="text-gray-600 dark:text-gray-400">Выберите сотрудника в фильтрах, чтобы увидеть его статистику</p>
           )}
 
-          <div className="mt-6 pt-6 border-t border-gray-300">
+          <div className="mt-6 pt-6 border-t border-gray-300 dark:border-gray-700">
             <div className="flex justify-between items-center">
-              <span className="text-lg font-semibold text-gray-800">
+              <span className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                 Общие суммарные часы всех слотов:
               </span>
               <span className="text-2xl font-bold text-sber-green">

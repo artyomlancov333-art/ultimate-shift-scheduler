@@ -31,6 +31,18 @@ service cloud.firestore {
       allow update: if true;
       allow delete: if true;
     }
+    
+    match /daysOff/{dayOffId} {
+      // Все могут читать выходные дни
+      allow read: if true;
+      
+      // Все могут создавать выходные дни
+      allow create: if true;
+      
+      // Все могут обновлять и удалять (логика ограничений в приложении)
+      allow update: if true;
+      allow delete: if true;
+    }
   }
 }
 ```
