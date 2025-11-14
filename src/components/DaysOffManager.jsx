@@ -4,40 +4,89 @@ import NameSelector from './NameSelector';
 import { addDayOff, deleteDayOff } from '../firebase';
 import { formatDate } from '../firebase';
 
-const NAMES = ['Артём', 'Анастасия', 'Адель', 'Ольга', 'Ксения'];
+const WEEK_DAYS = [
+  { value: '1', label: 'Понедельник' },
+  { value: '2', label: 'Вторник' },
+  { value: '3', label: 'Среда' },
+  { value: '4', label: 'Четверг' },
+  { value: '5', label: 'Пятница' },
+  { value: '6', label: 'Суббота' },
+  { value: '0', label: 'Воскресенье' },
+];
 
 const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
   const [date, setDate] = useState('');
   const [name, setName] = useState(currentUserName || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [addForAll, setAddForAll] = useState(false);
+  const [useDayOfWeek, setUseDayOfWeek] = useState(false);
+  const [dayOfWeek, setDayOfWeek] = useState('');
+
+  // Генерирует даты на ближайшие 30 дней для выбранного дня недели
+  const generateDatesForDayOfWeek = (targetDayOfWeek) => {
+    const dates = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Обнуляем время для точного сравнения
+    const targetDay = parseInt(targetDayOfWeek);
+    
+    // Находим следующий день недели
+    const currentDay = today.getDay();
+    let daysUntilNext = (targetDay - currentDay + 7) % 7;
+    if (daysUntilNext === 0) daysUntilNext = 7; // Если сегодня этот день, берем следующий
+    
+    const firstDate = new Date(today);
+    firstDate.setDate(today.getDate() + daysUntilNext);
+    
+    // Генерируем даты на 30 дней вперед
+    let currentDate = new Date(firstDate);
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 30);
+    
+    while (currentDate <= maxDate) {
+      dates.push(currentDate.toISOString().split('T')[0]);
+      currentDate.setDate(currentDate.getDate() + 7); // Следующая неделя
+    }
+    
+    return dates;
+  };
 
   const handleAddDayOff = async (e) => {
     e.preventDefault();
     
-    if (!date) {
-      onError('Пожалуйста, выберите дату');
-      return;
-    }
-
-    if (!addForAll && !name) {
+    if (!name) {
       onError('Пожалуйста, выберите имя сотрудника');
       return;
     }
 
+    if (useDayOfWeek) {
+      if (!dayOfWeek) {
+        onError('Пожалуйста, выберите день недели');
+        return;
+      }
+    } else {
+      if (!date) {
+        onError('Пожалуйста, выберите дату');
+        return;
+      }
+    }
+
     setIsSubmitting(true);
     try {
-      if (addForAll) {
-        // Добавляем выходной для всех сотрудников на выбранную дату
-        const promises = NAMES.map(employeeName => {
+      if (useDayOfWeek) {
+        // Генерируем даты на ближайшие 30 дней для выбранного дня недели
+        const datesToAdd = generateDatesForDayOfWeek(dayOfWeek);
+        
+        // Добавляем выходные для всех сгенерированных дат
+        const promises = datesToAdd.map(dateToAdd => {
           // Проверяем, не добавлен ли уже выходной
-          const existing = daysOff.find(d => d.name === employeeName && d.date === date);
+          const existing = daysOff.find(d => d.name === name && d.date === dateToAdd);
           if (!existing) {
-            return addDayOff({ name: employeeName, date });
+            return addDayOff({ name, date: dateToAdd });
           }
           return Promise.resolve();
         });
+        
         await Promise.all(promises);
+        setDayOfWeek('');
       } else {
         // Проверка, не добавлен ли уже выходной на эту дату для этого человека
         const existing = daysOff.find(d => d.name === name && d.date === date);
@@ -47,10 +96,10 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
           return;
         }
         await addDayOff({ name, date });
+        setDate('');
       }
-      setDate('');
-      setAddForAll(false);
-      if (!addForAll) setName(currentUserName || '');
+      setName(currentUserName || '');
+      setUseDayOfWeek(false);
       onError(null);
     } catch (error) {
       onError('Ошибка при добавлении выходного. Попробуйте снова.');
@@ -88,36 +137,61 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
-              id="addForAll"
-              checked={addForAll}
+              id="useDayOfWeek"
+              checked={useDayOfWeek}
               onChange={(e) => {
-                setAddForAll(e.target.checked);
+                setUseDayOfWeek(e.target.checked);
                 if (e.target.checked) {
-                  setName('');
+                  setDate('');
                 } else {
-                  setName(currentUserName || '');
+                  setDayOfWeek('');
                 }
               }}
               className="w-4 h-4 text-sber-green border-gray-300 rounded focus:ring-sber-green dark:bg-gray-700 dark:border-gray-600"
             />
-            <label htmlFor="addForAll" className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-200">
-              Добавить выходной для всех сотрудников на эту дату
+            <label htmlFor="useDayOfWeek" className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-200">
+              Установить выходной на определенный день недели (на месяц вперед)
             </label>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
-            {!addForAll && <NameSelector value={name} onChange={setName} />}
-            {addForAll && <div></div>}
-            <DateSelector value={date} onChange={setDate} />
+            <NameSelector value={name} onChange={setName} />
+            {useDayOfWeek ? (
+              <div>
+                <label htmlFor="dayOfWeek" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                  День недели
+                </label>
+                <select
+                  id="dayOfWeek"
+                  value={dayOfWeek}
+                  onChange={(e) => setDayOfWeek(e.target.value)}
+                  className="input-field"
+                >
+                  <option value="">Выберите день</option>
+                  {WEEK_DAYS.map((day) => (
+                    <option key={day.value} value={day.value}>
+                      {day.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <DateSelector value={date} onChange={setDate} />
+            )}
             <div className="flex items-end">
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? 'Добавление...' : addForAll ? `Добавить выходной для всех (${NAMES.length} чел.)` : 'Добавить выходной'}
+                {isSubmitting ? 'Добавление...' : useDayOfWeek ? 'Добавить выходные на месяц' : 'Добавить выходной'}
               </button>
             </div>
           </div>
+          {useDayOfWeek && (
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+              Выходные будут добавлены на ближайшие 30 дней для выбранного дня недели
+            </p>
+          )}
         </div>
       </form>
 
