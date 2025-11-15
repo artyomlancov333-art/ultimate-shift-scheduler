@@ -49,22 +49,22 @@ const SlotForm = ({ slots, onError, currentUserName, onUserNameChange }) => {
     // Проверка для каждой даты
     const errors = [];
     for (const checkDate of datesToAdd) {
-      // Проверка на максимальное количество людей в слоте
-      const conflictingSlots = slots.filter(
-        slot => 
+    // Проверка на максимальное количество людей в слоте
+    const conflictingSlots = slots.filter(
+      slot => 
           slot.date === checkDate && 
-          slot.startTime === startTime && 
-          slot.endTime === endTime
-      );
+        slot.startTime === startTime && 
+        slot.endTime === endTime
+    );
 
-      if (conflictingSlots.length >= 2) {
+    if (conflictingSlots.length >= 2) {
         errors.push(`На ${checkDate} в этом временном слоте уже максимальное количество сотрудников (2)`);
         continue;
-      }
+    }
 
-      // Проверка, не записан ли уже этот человек в этот слот
-      const duplicateSlot = conflictingSlots.find(slot => slot.name === name);
-      if (duplicateSlot) {
+    // Проверка, не записан ли уже этот человек в этот слот
+    const duplicateSlot = conflictingSlots.find(slot => slot.name === name);
+    if (duplicateSlot) {
         errors.push(`На ${checkDate} этот сотрудник уже записан в данный временной слот`);
         continue;
       }
@@ -105,7 +105,7 @@ const SlotForm = ({ slots, onError, currentUserName, onUserNameChange }) => {
       <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
           <div className="min-w-0">
-            <NameSelector value={name} onChange={handleNameChange} />
+          <NameSelector value={name} onChange={handleNameChange} />
           </div>
           <div className="space-y-2 min-w-0">
             <div className="flex items-center gap-2">
@@ -133,22 +133,22 @@ const SlotForm = ({ slots, onError, currentUserName, onUserNameChange }) => {
                 onChange={setSelectedDates} 
               />
             ) : (
-              <DateSelector value={date} onChange={setDate} />
+          <DateSelector value={date} onChange={setDate} />
             )}
           </div>
           <div className="min-w-0">
-            <TimeSelector 
-              label="Время начала" 
-              value={startTime} 
-              onChange={setStartTime} 
-            />
+          <TimeSelector 
+            label="Время начала" 
+            value={startTime} 
+            onChange={setStartTime} 
+          />
           </div>
           <div className="min-w-0">
-            <TimeSelector 
-              label="Время окончания" 
-              value={endTime} 
-              onChange={setEndTime} 
-            />
+          <TimeSelector 
+            label="Время окончания" 
+            value={endTime} 
+            onChange={setEndTime} 
+          />
           </div>
         </div>
         <button

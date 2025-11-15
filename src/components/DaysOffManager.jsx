@@ -92,7 +92,7 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
     } else {
       if (!date) {
         onError('Пожалуйста, выберите дату');
-        return;
+      return;
       }
     }
 
@@ -122,8 +122,8 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
           setIsSubmitting(false);
           return;
         }
-        await addDayOff({ name, date });
-        setDate('');
+      await addDayOff({ name, date });
+      setDate('');
       }
       setName(currentUserName || '');
       setUseDayOfWeek(false);
@@ -182,7 +182,7 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
             <div className="min-w-0">
-              <NameSelector value={name} onChange={setName} />
+          <NameSelector value={name} onChange={setName} />
             </div>
             {useDayOfWeek ? (
               <div className="min-w-0">
@@ -205,17 +205,17 @@ const DaysOffManager = ({ daysOff, onError, currentUserName, isAdmin }) => {
               </div>
             ) : (
               <div className="min-w-0">
-                <DateSelector value={date} onChange={setDate} />
+          <DateSelector value={date} onChange={setDate} />
               </div>
             )}
             <div className="flex items-end min-w-0">
-              <button
-                type="submit"
-                disabled={isSubmitting}
+            <button
+              type="submit"
+              disabled={isSubmitting}
                 className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-              >
+            >
                 {isSubmitting ? 'Добавление...' : useDayOfWeek ? 'Добавить выходные на месяц' : 'Добавить выходной'}
-              </button>
+            </button>
             </div>
           </div>
           {useDayOfWeek && (

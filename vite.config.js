@@ -7,5 +7,13 @@ export default defineConfig({
   // Для GitHub Pages раскомментируйте следующую строку:
   // base: '/ultimate-shift-scheduler/',
   // Для Vercel оставьте закомментированным (используется корневой путь)
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      }
+    }
+  }
 })
 
